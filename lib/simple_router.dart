@@ -1,4 +1,4 @@
-library simple_overlay;
+library simple_router;
 
 import 'package:flutter/material.dart';
 
@@ -10,8 +10,7 @@ class SimpleRouter {
     return SimpleRouter._(context);
   }
 
-  /// **Navigator.push()** shortcut.
-  Future<T?> to<T extends Object>(Widget route) {
+  Future<T?> push<T extends Object?>(Widget route) {
     return Navigator.push<T>(
       context,
       PageRouteBuilder<T>(
@@ -29,13 +28,23 @@ class SimpleRouter {
     );
   }
 
-  /// **Navigator.pushNamed()** shortcut.
-  Future<T?> toNamed<T extends Object>(String routeName, {Object? arguments}) {
-    return Navigator.pushNamed<T>(context, routeName, arguments: arguments);
+  /// **Navigator.push()** shortcut.
+  Future<T?> to<T extends Object?>(Widget route) {
+    return push<T>(route);
   }
 
-  /// **Navigator.pushReplacement()** shortcut.
-  Future<T?> off<T extends Object?, TO extends Object?>(Widget newRoute,
+  Future<T?> pushNamed<T extends Object?>(String routeName,
+      {Object? arguments}) {
+    return Navigator.of(context).pushNamed<T>(routeName, arguments: arguments);
+  }
+
+  /// **Navigator.pushNamed()** shortcut.
+  Future<T?> toNamed<T extends Object?>(String routeName, {Object? arguments}) {
+    return pushNamed<T>(routeName, arguments: arguments);
+  }
+
+  Future<T?> pushReplacement<T extends Object?, TO extends Object?>(
+      Widget newRoute,
       {TO? result}) {
     return Navigator.pushReplacement<T, TO>(
         context,
@@ -54,15 +63,28 @@ class SimpleRouter {
         result: result);
   }
 
-  /// **Navigator.pushReplacementNamed()** shortcut.
-  Future<T?> offNamed<T extends Object, TO extends Object>(String routeName,
-      {TO? result, Object? arguments}) {
+  /// **Navigator.pushReplacement()** shortcut.
+  Future<T?> off<T extends Object?, TO extends Object?>(Widget newRoute,
+      {TO? result}) {
+    return pushReplacement<T, TO>(newRoute, result: result);
+  }
+
+  Future<T?> pushReplacementNamed<T extends Object?, TO extends Object?>(
+      String routeName,
+      {TO? result,
+      Object? arguments}) {
     return Navigator.pushReplacementNamed<T, TO>(context, routeName,
         result: result, arguments: arguments);
   }
 
-  /// **Navigator.pushAndRemoveUntil()** shortcut.
-  Future<T?> offAll<T extends Object>(Widget newRoute,
+  /// **Navigator.pushReplacementNamed()** shortcut.
+  Future<T?> offNamed<T extends Object?, TO extends Object?>(String routeName,
+      {TO? result, Object? arguments}) {
+    return pushReplacementNamed<T, TO>(routeName,
+        result: result, arguments: arguments);
+  }
+
+  Future<T?> pushAndRemoveUntil<T extends Object?>(Widget newRoute,
       {bool Function(Route<dynamic>)? predicate}) {
     return Navigator.of(context).pushAndRemoveUntil<T>(
         PageRouteBuilder<T>(
@@ -80,22 +102,44 @@ class SimpleRouter {
         predicate ?? (Route<dynamic> route) => false);
   }
 
-  /// **Navigator.pushNamedAndRemoveUntil()** shortcut.
-  Future<T?> offAllNamed<T extends Object>(String newRouteName,
+  /// **Navigator.pushAndRemoveUntil()** shortcut.
+  Future<T?> offAll<T extends Object?>(Widget newRoute,
+      {bool Function(Route<dynamic>)? predicate}) {
+    return pushAndRemoveUntil<T>(newRoute,
+        predicate: predicate ?? (Route<dynamic> route) => false);
+  }
+
+  Future<T?> pushNamedAndRemoveUntil<T extends Object?>(String newRouteName,
       {bool Function(Route<dynamic>)? predicate, Object? arguments}) {
     return Navigator.pushNamedAndRemoveUntil<T>(
         context, newRouteName, predicate ?? (Route<dynamic> route) => false,
         arguments: arguments);
   }
 
-  /// **Navigation.popUntil()** shortcut.
-  void until(RoutePredicate predicate) {
+  /// **Navigator.pushNamedAndRemoveUntil()** shortcut.
+  Future<T?> offAllNamed<T extends Object?>(String newRouteName,
+      {bool Function(Route<dynamic>)? predicate, Object? arguments}) {
+    return pushNamedAndRemoveUntil<T>(newRouteName,
+        predicate: predicate ?? (Route<dynamic> route) => false,
+        arguments: arguments);
+  }
+
+  void popUntil(RoutePredicate predicate) {
     return Navigator.popUntil(context, predicate);
   }
 
-  /// **Navigator.pop()** shortcut.
-  void back<T extends Object>({T? result}) {
+  /// **Navigation.popUntil()** shortcut.
+  void until(RoutePredicate predicate) {
+    return popUntil(predicate);
+  }
+
+  void pop<T extends Object?>({T? result}) {
     return Navigator.pop<T>(context, result);
+  }
+
+  /// **Navigator.pop()** shortcut.
+  void back<T extends Object?>({T? result}) {
+    return pop<T>(result: result);
   }
 
   /// **Navigation.popUntil()** (with predicate) shortcut .<br><br>
